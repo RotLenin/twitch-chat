@@ -1,25 +1,36 @@
-import { client } from 'tmi.js';
+import { client as tmiClient } from 'tmi.js';
+
+const {
+    BOT_USERNAME,
+    OAUTH_TOKEN,
+    CHANNEL_NAME
+} = process.env;
 
 // Define configuration options
 const opts = {
+    options: { debug: true },
     identity: {
-        username: '<BOT_USERNAME>',
-        password: '<OAUTH_TOKEN>'
+        username: BOT_USERNAME,
+        password: OAUTH_TOKEN
     },
     channels: [
-        '<CHANNEL_NAME>'
+        CHANNEL_NAME
     ]
 };
 
 // Create a client with our options
-const client = new client(opts);
+const client = new tmiClient(opts);
 
 // Register our event handlers (defined below)
 client.on('message', onMessageHandler);
 client.on('connected', onConnectedHandler);
 
-// Connect to Twitch:
-client.connect();
+try {
+    // Connect to Twitch:
+    client.connect();
+} catch(err) {
+    console.log(err);
+}
 
 // Called every time a message comes in
 function onMessageHandler (target, context, msg, self) {
